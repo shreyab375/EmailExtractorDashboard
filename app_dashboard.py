@@ -193,3 +193,7 @@ with col3:
                                 template='plotly_white')
     fig_action.update_layout(xaxis_title='Requested Action', yaxis_title='Number of Complaints')
     st.plotly_chart(fig_action, use_container_width=True)
+
+st.cache_data.clear()
+time.sleep(10)
+st.rerun()
