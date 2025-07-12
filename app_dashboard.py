@@ -7,47 +7,7 @@ import time
 from streamlit_autorefresh import st_autorefresh
 
 
-# --- Configuration ---
-# For public sheets, use the sharing URL
-GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/179XQa9LLvivItAPTZZ0o3v6iu_TEBdcF7zFX1eK3r04/edit?usp=sharing"
-
-# --- Helper Functions ---
-@st.cache_data(ttl=30)  # Increased cache time to 30 seconds
-def load_email_data_from_gsheets():
-    """
-    Connects to Google Sheets and loads the data into a DataFrame.
-    """
-    try:
-        # For PUBLIC sheets - simplified approach
-        conn = st.connection("gsheets", type=GSheetsConnection)
-        
-        # Try different methods to read the data
-        try:
-            # Method 1: Read without specifying worksheet
-            df = conn.read(spreadsheet=GOOGLE_SHEET_URL)
-        except:
-            try:
-                # Method 2: Specify worksheet explicitly
-                df = conn.read(spreadsheet=GOOGLE_SHEET_URL, worksheet="Sheet1")
-            except Exception as e:
-                st.error(f"Failed to read from Google Sheets: {str(e)}")
-                return pd.DataFrame()
-            
-        # Clean the data
-        df = df.dropna(how='all')  # Remove completely empty rows
-        df = df.fillna('')  # Fill remaining NaN values with empty strings
-        
-        # Ensure numeric columns are correctly typed (using actual column names)
-        numeric_cols = ["output.confidence", "output.sentiment_score", "output.priority_score"]
-        for col in numeric_cols:
-            if col in df.columns:
-                df[col] = pd.to_numeric(df[col], errors='coerce')
-
-        return df
-    except Exception as e:
-        st.error(f"Error loading data from Google Sheets: {str(e)}")
-        return pd.DataFrame()
-
+#
 # --- Streamlit App Layout ---
 st.set_page_config(layout="wide", page_title="Email Workflow Dashboard")
 
