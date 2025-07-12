@@ -46,8 +46,7 @@ def load_email_data_from_gsheets():
 
 # --- Streamlit App Layout ---
 st.set_page_config(layout="wide", page_title="Email Workflow Dashboard")
-# Configure auto-refresh (e.g., refresh every 30 seconds)
-st_autorefresh(interval=30000, key="data_refresher")
+
 
 st.title("✉️ Customer Email Insights Dashboard")
 #time.sleep(5)
