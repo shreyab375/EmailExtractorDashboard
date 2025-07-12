@@ -1,0 +1,5 @@
+[server]
+# Use a stable Python version that has broader package compatibility.
+# Python 3.9 or 3.10 are often good choices.
+# You can try 3.9 first, and if issues persist, try 3.10.
+pythonVersion = "3.9"
