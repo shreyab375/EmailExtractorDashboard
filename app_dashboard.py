@@ -139,14 +139,29 @@ with col1:
 with col2:
     st.header("Complaint Volume Over Time")
     # Convert 'output.extracted_date_of_issue' to datetime
-    df['output.extracted_date_of_issue'] = pd.to_datetime(df['output.extracted_date_of_issue'])
+    df['output.extracted_date_of_issue'] = pd.to_datetime(df['output.extracted_date_of_issue'], errors='coerce')
+    
+    # Drop rows where the date conversion resulted in NaT (i.e., invalid dates)
+    # These rows cannot be plotted on a time-series chart.
+    df_cleaned = df.dropna(subset=['output.extracted_date_of_issue'])
+
     # Group by date and count the number of complaints
-    complaints_by_date = df.groupby('output.extracted_date_of_issue').size().reset_index(name='Count')
-    fig_time = px.scatter(complaints_by_date, 
-                    x='output.extracted_date_of_issue', 
-                    y='Count')
+    # Use the cleaned DataFrame for grouping
+    complaints_by_date = df_cleaned.groupby('output.extracted_date_of_issue').size().reset_index(name='Count')
+    
+    # Create the scatter plot
+    fig_time = px.scatter(
+        complaints_by_date, 
+        x='output.extracted_date_of_issue', 
+        y='Count',
+        title='Complaint Volume Over Time' # Added a title for clarity
+    )
+    
+    # Update layout for better visualization
     fig_time.update_layout(showlegend=False)
-    fig_time.update_layout(xaxis_title='Date of Complaint')
+    fig_time.update_layout(xaxis_title='Date of Complaint', yaxis_title='Number of Complaints') # Added y-axis title
+    
+    # Display the plot in Streamlit
     st.plotly_chart(fig_time, use_container_width=True)
 
 with col3:
